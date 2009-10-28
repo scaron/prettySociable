@@ -9,7 +9,7 @@
 		left: 0;
 		top: 0;
 		position: absolute;
-		z-index: 1;
+		z-index: 1000;
 	}
 	
 		.ps_hd { background: url(../images/prettySociable/backgrounds/tr.png) top right no-repeat; padding: 0 8px 0 0; }
@@ -24,7 +24,7 @@
 
 		.ps_hd,
 		.ps_bd,
-		.ps_ft { position: relative; z-index: 1; }
+		.ps_ft { position: relative; z-index: 1000; }
 		
 		.ps_hd .ps_c,
 		.ps_ft .ps_c {
@@ -35,10 +35,12 @@
 	#ps_title {
 		background: url(../images/prettySociable/backgrounds/tt_r.png) top right no-repeat; padding: 0 5px 0 0;
 		color: #fff;
+		font-size: 10px;
+		font-weight: normal;
 		left: 8px;
 		position: absolute;
 		top: -15px;
-		z-index: 0;
+		z-index: 999;
 	}
 	
 		#ps_title .ps_tt_l {
@@ -55,7 +57,7 @@
 		position: absolute;
 		top: 0;
 		width: 250px;
-		z-index: 10;
+		z-index: 1010;
 	}
 	    
 		#ps_tooltip p { margin: 0; }
@@ -68,7 +70,7 @@
 		left: 50%;
 		position: absolute;
 		top: 50%;
-		z-index: 5;
+		z-index: 1005;
 	}
 	
 	#ps_websites .ps_label {
@@ -84,7 +86,7 @@
 	#ps_websites ul {
 		list-style: none;
 		position: relative;
-		z-index: 10;
+		z-index: 1010;
 		width: 400px;
 	}
 	
@@ -105,5 +107,5 @@
 		position: absolute;
 		top: 0;
 		width: 100%;
-		z-index: 5;
+		z-index: 1005;
 	}

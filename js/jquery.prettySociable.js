@@ -89,7 +89,7 @@
 				},
 				tooltip: {
 						offsetTop:0,
-						offsetLeft: 10
+						offsetLeft: 15
 					},
 				popup: {
 					width: 900,
@@ -98,17 +98,17 @@
 				callback: function(){} /* Called when prettySociable is closed */
 			}, settings);
 			
-			var websites, settings=$.prettySociable.settings, show_timer;
+			var websites, settings=$.prettySociable.settings, show_timer, ps_hover;
 			
 			// Bind the mouseover
 			$('a[rel^=prettySociable]').hover(function(){ // HOVER
 				_self = this; // Scoping
-				
+
 				// Bring the hovered item up front
 				$(this).css({
 					'cursor': 'move',
 					'position': 'relative',
-					'z-index': 2
+					'z-index': 1005
 				});
 				
 				// Add the shadow, then position it, then inject it
@@ -132,11 +132,14 @@
 								</div> \
 							</div>').css({
 					'width': $(this).width() + (settings.hover_padding+8)*2,
-					'top': $(this).offset().top - settings.hover_padding-8,
-					'left': $(this).offset().left - settings.hover_padding-8
-				}).hide().appendTo('body').fadeIn(settings.animationSpeed);
+					'top': $(this).position().top - settings.hover_padding-8 + parseFloat($(this).css('marginTop')),
+					'left': $(this).position().left - settings.hover_padding-8 + parseFloat($(this).css('marginLeft'))
+				}).hide().insertAfter(_self).fadeIn(settings.animationSpeed);
 				
 				$(ps_hover).find('>.ps_bd .ps_s').height($(_self).height() + settings.hover_padding*2);
+				
+				// Fix for IE6
+				fixCrappyBrowser('ps_hover',this);
 
 				// Drag action!
 				DragHandler.attach($(this)[0]);
@@ -145,6 +148,8 @@
 					_self = this; // scoping
 					show_timer = window.setTimeout(function(){
 						$(_self).animate({'opacity':0},settings.animationSpeed);
+
+						$(ps_hover).remove();
 
 						// Build the overlay
 						overlay.show();
@@ -175,7 +180,6 @@
 				$(ps_hover).fadeOut(settings.animationSpeed,function(){ $(this).remove() });
 			}).click(function(){
 				clearTimeout(show_timer);
-
 			});
 
 
@@ -220,6 +224,9 @@
 
 
 					$(ps_tooltip).find('.ps_s').html("<p><strong>" + attributes[1][1] + "</strong><br />" + attributes[2][1]+"</p>");
+					
+					// Fix for IE6
+					fixCrappyBrowser('ps_tooltip');
 				},
 				checkCollision : function(x,y){
 					collision = "";
@@ -290,6 +297,9 @@
 
 					// Append it!
 					$('<div id="ps_websites"><p class="ps_label"></p></div>').append(websites_container).appendTo('body');
+					
+					// Fix for IE6
+					fixCrappyBrowser('ps_websites');
 					
 					scrollPos = _getScroll();
 					
@@ -445,6 +455,30 @@
 
 				return {scrollTop:scrollTop,scrollLeft:scrollLeft};
 			};
+			
+			/* ------------------------------------------------------------------------
+				Function: fixCrappyBrowser
+				Description: PNG Fix.
+			------------------------------------------------------------------------- */
+			
+			function fixCrappyBrowser(element,caller) {
+				if($.browser.msie && $.browser.version == 6) {
+					if(typeof DD_belatedPNG != 'undefined'){
+						if(element == 'ps_websites'){
+							$('#'+element+' img').each(function(){
+								DD_belatedPNG.fixPng($(this)[0]);
+							});
+						}else{
+							DD_belatedPNG.fixPng($('#'+element+' .ps_hd .ps_c')[0]);
+							DD_belatedPNG.fixPng($('#'+element+' .ps_hd')[0]);
+							DD_belatedPNG.fixPng($('#'+element+' .ps_bd .ps_c')[0]);
+							DD_belatedPNG.fixPng($('#'+element+' .ps_bd')[0]);
+							DD_belatedPNG.fixPng($('#'+element+' .ps_ft .ps_c')[0]);
+							DD_belatedPNG.fixPng($('#'+element+' .ps_ft')[0]);
+						}
+					};
+				};
+			}
 			
 		};
 	})(jQuery);
