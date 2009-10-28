@@ -87,6 +87,17 @@
 						'sizes':{'width':70,'height':70}
 					}
 				},
+				urlshortener : {
+					/*
+						To get started you'll need a free bit.ly user account and API key - sign up at:
+					    http://bit.ly/account/register?rd=/ 
+						Quickly access your private API key once you are signed in at:
+					    http://bit.ly/account/your_api_key
+					*/
+					bitly : {
+						'active' : false
+					}
+				},
 				tooltip: {
 						offsetTop:0,
 						offsetLeft: 15
@@ -182,7 +193,18 @@
 				clearTimeout(show_timer);
 			});
 
-
+			// if we use the bitly url shorting :
+			if (window.BitlyCB) {
+				BitlyCB.myShortenCallback = function(data) {
+					var result;
+					for (var r in data.results) {
+						result = data.results[r];
+						result['longUrl'] = r;
+						break;
+					};
+					tooltip.link_to_share = result['shortUrl']; // update the url variable
+				};
+			};
 
 			/* ------------------------------------------------------------------------
 				Class: tooltip
@@ -192,9 +214,13 @@
 				show : function(caller){
 					// Save the link to share
 					tooltip.link_to_share = ($(caller).attr('href') != "#") ? $(caller).attr('href') : location.href;
-					
+					// If we want to use Bit.ly to shorten our url :
+					if (window.BitlyCB) {
+						if (settings.urlshortener.bitly.active) {
+							BitlyClient.shorten(tooltip.link_to_share, 'BitlyCB.myShortenCallback'); // Overwrite the link with the shortened one
+						};
+					};
 					attributes = $(caller).attr('rel').split(';');
-					
 					// Rebuild as an array
 					for (var i=1; i < attributes.length; i++) {
 						attributes[i] = attributes[i].split(':');
