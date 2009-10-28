@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------
 	prettySociable plugin.
-	Version: 1.0
+	Version: 1.0.1
 	Description: Include this plugin in your webpage and let people
 	share your content like never before.
 	Website: http://no-margin-for-errors.com/projects/prettySociable/
@@ -99,6 +99,12 @@
 			}, settings);
 			
 			var websites, settings=$.prettySociable.settings, show_timer, ps_hover;
+			
+			// Preload the icons
+			$.each(settings.websites,function(i){
+				var preload = new Image();
+				preload.src =this.icon;
+			});
 			
 			// Bind the mouseover
 			$('a[rel^=prettySociable]').hover(function(){ // HOVER
