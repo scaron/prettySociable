@@ -120,9 +120,15 @@
 			// Bind the mouseover
 			$('a[rel^=prettySociable]').hover(function(){ // HOVER
 				_self = this; // Scoping
+				_container = this;
+				
+				// If we're sharing an image the self becomes the image and not the link
+				if($(_self).find('img').size() > 0){
+					_self = $(_self).find('img');
+				}
 
 				// Bring the hovered item up front
-				$(this).css({
+				$(_self).css({
 					'cursor': 'move',
 					'position': 'relative',
 					'z-index': 1005
@@ -148,10 +154,10 @@
 									</div> \
 								</div> \
 							</div>').css({
-					'width': $(this).width() + (settings.hover_padding+8)*2,
-					'top': $(this).position().top - settings.hover_padding-8 + parseFloat($(this).css('marginTop')),
-					'left': $(this).position().left - settings.hover_padding-8 + parseFloat($(this).css('marginLeft'))
-				}).hide().insertAfter(_self).fadeIn(settings.animationSpeed);
+					'width': $(_self).width() + (settings.hover_padding+8)*2,
+					'top': $(_self).position().top - settings.hover_padding-8 + parseFloat($(_self).css('marginTop')),
+					'left': $(_self).position().left - settings.hover_padding-8 + parseFloat($(_self).css('marginLeft'))
+				}).hide().insertAfter(_container).fadeIn(settings.animationSpeed);
 				
 				$(ps_hover).find('>.ps_bd .ps_s').height($(_self).height() + settings.hover_padding*2);
 				
