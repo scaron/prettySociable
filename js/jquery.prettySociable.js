@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------
 	prettySociable plugin.
-	Version: 1.0.1
+	Version: 1.1
 	Description: Include this plugin in your webpage and let people
 	share your content like never before.
 	Website: http://no-margin-for-errors.com/projects/prettySociable/
@@ -199,19 +199,6 @@
 				clearTimeout(show_timer);
 			});
 
-			// if we use the bitly url shorting :
-			if (window.BitlyCB) {
-				BitlyCB.myShortenCallback = function(data) {
-					var result;
-					for (var r in data.results) {
-						result = data.results[r];
-						result['longUrl'] = r;
-						break;
-					};
-					tooltip.link_to_share = result['shortUrl']; // update the url variable
-				};
-			};
-
 			/* ------------------------------------------------------------------------
 				Class: tooltip
 				Description: Displays the tooltip on drag.
@@ -220,9 +207,20 @@
 				show : function(caller){
 					// Save the link to share
 					tooltip.link_to_share = ($(caller).attr('href') != "#") ? $(caller).attr('href') : location.href;
+
 					// If we want to use Bit.ly to shorten our url :
-					if (window.BitlyCB) {
-						if (settings.urlshortener.bitly.active) {
+					if (settings.urlshortener.bitly.active) {
+						if (window.BitlyCB) {
+							BitlyCB.myShortenCallback = function(data) {
+								var result;
+								for (var r in data.results) {
+									result = data.results[r];
+									result['longUrl'] = r;
+									break;
+								};
+								tooltip.link_to_share = result['shortUrl']; // update the url variable
+							};
+
 							BitlyClient.shorten(tooltip.link_to_share, 'BitlyCB.myShortenCallback'); // Overwrite the link with the shortened one
 						};
 					};
