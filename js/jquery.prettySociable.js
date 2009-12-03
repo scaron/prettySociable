@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------
 	prettySociable plugin.
-	Version: 1.1
+	Version: 1.2
 	Description: Include this plugin in your webpage and let people
 	share your content like never before.
 	Website: http://no-margin-for-errors.com/projects/prettySociable/
@@ -18,6 +18,7 @@
 				animationSpeed: 'fast', /* fast/slow/normal */
 				opacity: 0.90, /* Value between 0 and 1 */
 				share_label: 'Drag to share', /* Text displayed when a user rollover an item */
+				label_position: 'top', /* top OR inside */
 				share_on_label: 'Share on ', /* Text displayed when a user rollover a website to share */
 				hideflash: false, /* Hides all the flash object on a page, set to TRUE if flash appears over prettySociable */
 				hover_padding: 0,
@@ -122,17 +123,34 @@
 				_self = this; // Scoping
 				_container = this;
 				
-				// If we're sharing an image the self becomes the image and not the link
+				// If we're sharing an image or a video the self becomes the image and not the link
 				if($(_self).find('img').size() > 0){
 					_self = $(_self).find('img');
+				}else if($.browser.msie){
+					if($(_self).find('embed').size() > 0){
+						_self = $(_self).find('embed');
+						$(_self).css({'display':'block'});
+					}
+				}else{
+					if($(_self).find('object').size() > 0){
+						_self = $(_self).find('object');
+						$(_self).css({'display':'block'});
+					}
 				}
-
+				
 				// Bring the hovered item up front
 				$(_self).css({
 					'cursor': 'move',
 					'position': 'relative',
 					'z-index': 1005
 				});
+				
+				// Define the offset in the case the shared element has padding/borders
+				offsetLeft = (parseFloat($(_self).css('borderLeftWidth'))) ? parseFloat($(_self).css('borderLeftWidth')) : 0;
+				offsetTop = (parseFloat($(_self).css('borderTopWidth'))) ? parseFloat($(_self).css('borderTopWidth')) : 0;
+				
+				offsetLeft += (parseFloat($(_self).css('paddingLeft'))) ? parseFloat($(_self).css('paddingLeft')) : 0;
+				offsetTop += (parseFloat($(_self).css('paddingTop'))) ? parseFloat($(_self).css('paddingTop')) : 0;
 				
 				// Add the shadow, then position it, then inject it
 				ps_hover = $('<div id="ps_hover"> \
@@ -155,9 +173,11 @@
 								</div> \
 							</div>').css({
 					'width': $(_self).width() + (settings.hover_padding+8)*2,
-					'top': $(_self).position().top - settings.hover_padding-8 + parseFloat($(_self).css('marginTop')),
-					'left': $(_self).position().left - settings.hover_padding-8 + parseFloat($(_self).css('marginLeft'))
+					'top': $(_self).position().top - settings.hover_padding-8 + parseFloat($(_self).css('marginTop')) + offsetTop,
+					'left': $(_self).position().left - settings.hover_padding-8 + parseFloat($(_self).css('marginLeft')) + offsetLeft
 				}).hide().insertAfter(_container).fadeIn(settings.animationSpeed);
+				
+				$('#ps_title').animate({top:-15},settings.animationSpeed);
 				
 				$(ps_hover).find('>.ps_bd .ps_s').height($(_self).height() + settings.hover_padding*2);
 				
@@ -169,7 +189,11 @@
 			
 				$(this)[0].dragBegin = function(e){
 					_self = this; // scoping
+
 					show_timer = window.setTimeout(function(){
+						// Hide all flashes
+						$('object,embed').css('visibility','hidden');
+						
 						$(_self).animate({'opacity':0},settings.animationSpeed);
 
 						$(ps_hover).remove();
@@ -191,6 +215,8 @@
 				}
 
 				$(this)[0].dragEnd = function(element,x,y){
+					// Show all flashes
+					$('object,embed').css('visibility','visible');
 					
 					// Reposition it where it belongs
 					$(this).attr('style',0);
