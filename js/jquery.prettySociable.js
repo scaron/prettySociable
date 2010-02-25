@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------
 	prettySociable plugin.
-	Version: 1.2
+	Version: 1.2.1
 	Description: Include this plugin in your webpage and let people
 	share your content like never before.
 	Website: http://no-margin-for-errors.com/projects/prettySociable/
@@ -11,7 +11,7 @@
 ------------------------------------------------------------------------- */
 
 	(function($) {
-		$.prettySociable = {version: 1.0};
+		$.prettySociable = {version: 1.2.1};
 
 		$.prettySociable = function(settings) {
 			$.prettySociable.settings = jQuery.extend({
@@ -263,10 +263,10 @@
 					};
 
 					// If no defined title, take the page title
-					description = ($('meta[name=Description]').attr('content')) ? $('meta[name=Description]').attr('content') : "";
+					desc = ($('meta[name=Description]').attr('content')) ? $('meta[name=Description]').attr('content') : "";
 					if(attributes.length==1) {
 						attributes[1] = ['title',document.title];
-						attributes[2] = ['excerpt',description];
+						attributes[2] = ['excerpt',desc];
 					}
 
 					ps_tooltip = $('<div id="ps_tooltip"> \
