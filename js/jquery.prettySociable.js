@@ -11,7 +11,7 @@
 ------------------------------------------------------------------------- */
 
 	(function($) {
-		$.prettySociable = {version: 1.2.1};
+		$.prettySociable = {version: 1.21};
 
 		$.prettySociable = function(settings) {
 			$.prettySociable.settings = jQuery.extend({
